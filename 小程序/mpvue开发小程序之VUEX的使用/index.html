@@ -4,22 +4,22 @@
 <head>
   <meta charset="UTF-8">
   
-    <title>mpvue开发小程序之使用fly实现httpServer请求 | 华狸狐少</title>
+    <title>mpvue开发小程序之VUEX的使用 | 华狸狐少</title>
     <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
     
     <meta name="author" content="华狸狐少">
     
 
     
-    <meta name="description" content="Fly.js 一个基于Promise的、强大的、支持多种JavaScript运行时的http请求库. 有了它，您可以使用一份http请求代码在浏览器、微信小程序、Weex、Node、React Native、快应用中都能正常运行。">
+    <meta name="description" content="src下创建stroe目录，创建index.js、getters.js、state.js、mutation-types.js、mutations.js">
 <meta property="og:type" content="article">
-<meta property="og:title" content="mpvue开发小程序之使用fly实现httpServer请求">
-<meta property="og:url" content="http://leezj.cn/2021/12/18/%E5%B0%8F%E7%A8%8B%E5%BA%8F/mpvue%E5%BC%80%E5%8F%91%E5%B0%8F%E7%A8%8B%E5%BA%8F%E4%B9%8B%E4%BD%BF%E7%94%A8fly%E5%AE%9E%E7%8E%B0httpServer%E8%AF%B7%E6%B1%82/index.html">
+<meta property="og:title" content="mpvue开发小程序之VUEX的使用">
+<meta property="og:url" content="http://leezj.cn/%E5%B0%8F%E7%A8%8B%E5%BA%8F/mpvue%E5%BC%80%E5%8F%91%E5%B0%8F%E7%A8%8B%E5%BA%8F%E4%B9%8BVUEX%E7%9A%84%E4%BD%BF%E7%94%A8/index.html">
 <meta property="og:site_name" content="华狸狐少">
-<meta property="og:description" content="Fly.js 一个基于Promise的、强大的、支持多种JavaScript运行时的http请求库. 有了它，您可以使用一份http请求代码在浏览器、微信小程序、Weex、Node、React Native、快应用中都能正常运行。">
+<meta property="og:description" content="src下创建stroe目录，创建index.js、getters.js、state.js、mutation-types.js、mutations.js">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2021-12-17T16:00:00.000Z">
-<meta property="article:modified_time" content="2021-12-23T09:11:36.216Z">
+<meta property="article:published_time" content="2021-12-18T16:00:00.000Z">
+<meta property="article:modified_time" content="2021-12-23T09:11:41.776Z">
 <meta property="article:author" content="华狸狐少">
 <meta name="twitter:card" content="summary">
 
@@ -76,42 +76,53 @@
 		<header class="article-info clearfix">
   <h1 itemprop="name">
     
-      <a href="/2021/12/18/小程序/mpvue开发小程序之使用fly实现httpServer请求/" title="mpvue开发小程序之使用fly实现httpServer请求" itemprop="url">mpvue开发小程序之使用fly实现httpServer请求</a>
+      <a href="/小程序/mpvue开发小程序之VUEX的使用/" title="mpvue开发小程序之VUEX的使用" itemprop="url">mpvue开发小程序之VUEX的使用</a>
   </h1>
   <p class="article-author">By
        
 		<a href="/about" title="华狸狐少" target="_blank" itemprop="author">华狸狐少</a>
 		
   <p class="article-time">
-    <time datetime="2021-12-17T16:00:00.000Z" itemprop="datePublished"> 发表于 2021-12-18</time>
+    <time datetime="2021-12-18T16:00:00.000Z" itemprop="datePublished"> 发表于 2021-12-19</time>
     
   </p>
 </header>
 	<div class="article-content">
 
-		<p>Fly.js 一个基于Promise的、强大的、支持多种JavaScript运行时的http请求库. 有了它，您可以使用一份http请求代码在浏览器、微信小程序、Weex、Node、React Native、快应用中都能正常运行。</p>
+		<p>src下创建stroe目录，创建index.js、getters.js、state.js、mutation-types.js、mutations.js</p>
 <span id="more"></span>
 
 
-<p><strong>根据不同平台，使用不同依赖  可根据mpvuePlatform的值来判断是什么平台，新建request.js文件</strong>：</p>
-<p>在微信小程序中引入</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">if (mpvuePlatform === &#x27;wx&#x27;) &#123;</span><br><span class="line">  var Fly = require(&#x27;flyio/dist/npm/wx&#x27;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<p>在支付宝小程序中引入</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">var Fly=require(&quot;flyio/dist/npm/ap&quot;) </span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<p>Weex中引入</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">var Fly=require(&quot;flyio/dist/npm/weex&quot;) </span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p><strong>index.js代码示例</strong>：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">import Vue from &#x27;vue&#x27;</span><br><span class="line">import Vuex from &#x27;vuex&#x27;</span><br><span class="line">import state from &#x27;./state&#x27;</span><br><span class="line">import getters from &#x27;./getters&#x27;</span><br><span class="line">import actions from &#x27;./actions&#x27;</span><br><span class="line">import mutations from &#x27;./mutations&#x27;</span><br><span class="line"></span><br><span class="line">Vue.use(Vuex)</span><br><span class="line"></span><br><span class="line">export default new Vuex.Store(&#123;</span><br><span class="line">  state,</span><br><span class="line">  getters,</span><br><span class="line">  actions,</span><br><span class="line">  mutations</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
 
-<p><strong>配置请求前缀</strong></p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">var fly = new Fly();</span><br><span class="line">fly.config.baseURL = &#x27;xxxxxxxx&#x27;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p><strong>state.js代码示例</strong>：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">const state = &#123;</span><br><span class="line">  token: mpvue.getStorageSync(&#x27;token&#x27;) || &quot;&quot;</span><br><span class="line">&#125;</span><br><span class="line">export default state</span><br></pre></td></tr></table></figure>
 
-<p><strong>请求拦截</strong></p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">fly.interceptors.request.use((config, promise) =&gt; &#123;</span><br><span class="line">  return config;</span><br><span class="line">&#125;)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p><strong>getter.js代码示例：</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">let getters = &#123;</span><br><span class="line">  token: state =&gt; state.token,</span><br><span class="line">  openid: state =&gt; state.openid,</span><br><span class="line">  session_key: state =&gt; state.session_key,</span><br><span class="line">&#125;</span><br><span class="line">export default getters</span><br></pre></td></tr></table></figure>
 
-<p><strong>响应拦截</strong></p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">fly.interceptors.response.use((response) =&gt; &#123;</span><br><span class="line">  return response;</span><br><span class="line">&#125;)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
-<p><strong>请求封装</strong></p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">export default &#123;</span><br><span class="line">  get(url, params) &#123;</span><br><span class="line">    return new Promise((resolve, reject) =&gt; &#123;</span><br><span class="line">      fly.get(url, params).then(result =&gt; &#123;</span><br><span class="line">        resolve(result);</span><br><span class="line">      &#125;).catch(err =&gt; &#123;</span><br><span class="line">        reject(err.engine.response)</span><br><span class="line">      &#125;)</span><br><span class="line">    &#125;)</span><br><span class="line"></span><br><span class="line">  &#125;,</span><br><span class="line">  post(url, params) &#123;</span><br><span class="line">    return new Promise((resolve, reject) =&gt; &#123;</span><br><span class="line">      fly.post(url, params).then(result =&gt; &#123;</span><br><span class="line">        resolve(result);</span><br><span class="line">      &#125;).catch(err =&gt; &#123;</span><br><span class="line">        reject(err.engine.response)</span><br><span class="line">      &#125;)</span><br><span class="line">    &#125;)</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>  
+<p><strong>mutation-types.js代码示例</strong>：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">export const SET_TOKEN = &#x27;SET_TOKEN&#x27;</span><br><span class="line">export const SET_ID = &#x27;SET_ID&#x27;</span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>mutation.js代码示例：</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">import * as types from &#x27;./mutation-types&#x27;</span><br><span class="line">const matations = &#123;</span><br><span class="line">  /**</span><br><span class="line">   * state: 当前状态树</span><br><span class="line">   * v: 提交matations时传的参数</span><br><span class="line">   */</span><br><span class="line">  [types.SET_TOKEN](state, v) &#123;</span><br><span class="line">    state.token = v</span><br><span class="line">    //  同步存入本地缓存</span><br><span class="line">    mpvue.setStorageSync(&#x27;token&#x27;, v)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">export default matations</span><br></pre></td></tr></table></figure>
+
+
+<p><strong>main.js全局引入store</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">import store from &#x27;./store/index&#x27;</span><br><span class="line">Vue.prototype.$store = store</span><br></pre></td></tr></table></figure>
+
+
+<p><strong>在页面中使用store</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">this.$store.commit(&quot;SET_TOKEN&quot;,&quot;xxxxx&quot;)</span><br><span class="line">let token = this.$store.state.token;</span><br></pre></td></tr></table></figure>
+<p>或</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">import &#123; mapState, mapMutations &#125; from &#x27;vuex&#x27;</span><br><span class="line"></span><br><span class="line">export default &#123;</span><br><span class="line">    data:&#123;</span><br><span class="line">        return&#123;</span><br><span class="line">            </span><br><span class="line">        &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    computed:&#123;</span><br><span class="line">        computed: &#123;</span><br><span class="line">            ...mapState([&#x27;token&#x27;])</span><br><span class="line">        &#125;,</span><br><span class="line">    &#125;,</span><br><span class="line">    methods:&#123;</span><br><span class="line">        ...mapMutations(&#123;</span><br><span class="line">            setToken: &#x27;SET_TOKEN&#x27;</span><br><span class="line">        &#125;),</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+  
 	</div>
 		<footer class="article-footer clearfix">
 <div class="article-catetags">
@@ -128,7 +139,7 @@
 
 	<div class="article-share" id="share">
 	
-	  <div data-url="http://leezj.cn/2021/12/18/%E5%B0%8F%E7%A8%8B%E5%BA%8F/mpvue%E5%BC%80%E5%8F%91%E5%B0%8F%E7%A8%8B%E5%BA%8F%E4%B9%8B%E4%BD%BF%E7%94%A8fly%E5%AE%9E%E7%8E%B0httpServer%E8%AF%B7%E6%B1%82/" data-title="mpvue开发小程序之使用fly实现httpServer请求 | 华狸狐少" data-tsina="" class="share clearfix">
+	  <div data-url="http://leezj.cn/%E5%B0%8F%E7%A8%8B%E5%BA%8F/mpvue%E5%BC%80%E5%8F%91%E5%B0%8F%E7%A8%8B%E5%BA%8F%E4%B9%8BVUEX%E7%9A%84%E4%BD%BF%E7%94%A8/" data-title="mpvue开发小程序之VUEX的使用 | 华狸狐少" data-tsina="" class="share clearfix">
 	  </div>
 	
 	</div>
@@ -142,13 +153,21 @@
 <nav class="article-nav clearfix">
  
  <div class="prev" >
- <a href="/2021/12/19/小程序/mpvue开发小程序之VUEX的使用/" title="mpvue开发小程序之VUEX的使用">
+ <a href="/小程序/mpvue开发小程序之微信小程序授权登录流程/" title="mpvue开发小程序之微信小程序授权登录流程">
   <strong>上一篇：</strong><br/>
   <span>
-  mpvue开发小程序之VUEX的使用</span>
+  mpvue开发小程序之微信小程序授权登录流程</span>
 </a>
 </div>
 
+
+<div class="next">
+<a href="/小程序/mpvue开发小程序之使用fly实现httpServer请求/"  title="mpvue开发小程序之使用fly实现httpServer请求">
+ <strong>下一篇：</strong><br/> 
+ <span>mpvue开发小程序之使用fly实现httpServer请求
+</span>
+</a>
+</div>
 
 </nav>
 
@@ -177,6 +196,10 @@
 <div class="categorieslist">
 	<p class="asidetitle">分类</p>
 		<ul>
+		
+		  
+			<li><a href="/categories/nodejs/" title="nodejs">nodejs<sup>2</sup></a></li>
+		  
 		
 		  
 			<li><a href="/categories/小程序/" title="小程序">小程序<sup>3</sup></a></li>
