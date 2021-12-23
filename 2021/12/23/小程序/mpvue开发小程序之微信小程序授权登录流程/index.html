@@ -4,24 +4,26 @@
 <head>
   <meta charset="UTF-8">
   
-    <title>mpvue开发小程序之使用fly实现httpServer请求 | 华狸狐少</title>
+    <title>mpvue开发小程序之微信小程序授权登录流程 | 华狸狐少</title>
     <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
     
     <meta name="author" content="华狸狐少">
     
 
     
-    <meta name="description" content="Fly.js 一个基于Promise的、强大的、支持多种JavaScript运行时的http请求库. 有了它，您可以使用一份http请求代码在浏览器、微信小程序、Weex、Node、React Native、快应用中都能正常运行。">
+    <meta name="description" content="进入小程序，校验是否登录，如果未登录，清除原有的登录凭证并调用小程序登录api获取到临时code,通过调用服务端api发送code获取openID和token并缓存">
 <meta property="og:type" content="article">
-<meta property="og:title" content="mpvue开发小程序之使用fly实现httpServer请求">
-<meta property="og:url" content="http://leezj.cn/2021/12/23/%E5%B0%8F%E7%A8%8B%E5%BA%8F/mpvue%E5%BC%80%E5%8F%91%E5%B0%8F%E7%A8%8B%E5%BA%8F%E4%B9%8B%E4%BD%BF%E7%94%A8fly%E5%AE%9E%E7%8E%B0httpServer%E8%AF%B7%E6%B1%82/index.html">
+<meta property="og:title" content="mpvue开发小程序之微信小程序授权登录流程">
+<meta property="og:url" content="http://leezj.cn/2021/12/23/%E5%B0%8F%E7%A8%8B%E5%BA%8F/mpvue%E5%BC%80%E5%8F%91%E5%B0%8F%E7%A8%8B%E5%BA%8F%E4%B9%8B%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%E6%8E%88%E6%9D%83%E7%99%BB%E5%BD%95%E6%B5%81%E7%A8%8B/index.html">
 <meta property="og:site_name" content="华狸狐少">
-<meta property="og:description" content="Fly.js 一个基于Promise的、强大的、支持多种JavaScript运行时的http请求库. 有了它，您可以使用一份http请求代码在浏览器、微信小程序、Weex、Node、React Native、快应用中都能正常运行。">
+<meta property="og:description" content="进入小程序，校验是否登录，如果未登录，清除原有的登录凭证并调用小程序登录api获取到临时code,通过调用服务端api发送code获取openID和token并缓存">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2021-12-23T06:23:28.872Z">
-<meta property="article:modified_time" content="2021-12-23T08:08:45.905Z">
+<meta property="og:image" content="http://leezj.cn/images/1.webp">
+<meta property="article:published_time" content="2021-12-23T08:26:11.795Z">
+<meta property="article:modified_time" content="2021-12-23T08:56:53.335Z">
 <meta property="article:author" content="华狸狐少">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://leezj.cn/images/1.webp">
 
     
     <link rel="alternative" href="/atom.xml" title="华狸狐少" type="application/atom+xml">
@@ -30,8 +32,6 @@
     
     
 <link rel="stylesheet" href="/css/style.css">
-<link rel="stylesheet" href="/%02.css">
-<link rel="stylesheet" href="/.css">
 
 <meta name="generator" content="Hexo 5.4.0"></head>
 
@@ -76,42 +76,32 @@
 		<header class="article-info clearfix">
   <h1 itemprop="name">
     
-      <a href="/2021/12/23/小程序/mpvue开发小程序之使用fly实现httpServer请求/" title="mpvue开发小程序之使用fly实现httpServer请求" itemprop="url">mpvue开发小程序之使用fly实现httpServer请求</a>
+      <a href="/2021/12/23/小程序/mpvue开发小程序之微信小程序授权登录流程/" title="mpvue开发小程序之微信小程序授权登录流程" itemprop="url">mpvue开发小程序之微信小程序授权登录流程</a>
   </h1>
   <p class="article-author">By
        
 		<a href="/about" title="华狸狐少" target="_blank" itemprop="author">华狸狐少</a>
 		
   <p class="article-time">
-    <time datetime="2021-12-23T06:23:28.872Z" itemprop="datePublished"> 发表于 2021-12-23</time>
+    <time datetime="2021-12-23T08:26:11.795Z" itemprop="datePublished"> 发表于 2021-12-23</time>
     
   </p>
 </header>
 	<div class="article-content">
 
-		<p>Fly.js 一个基于Promise的、强大的、支持多种JavaScript运行时的http请求库. 有了它，您可以使用一份http请求代码在浏览器、微信小程序、Weex、Node、React Native、快应用中都能正常运行。</p>
+		<img src="/images/1.webp" style="display:block;margin:auto">
+
+<p><strong>进入小程序，校验是否登录，如果未登录，清除原有的登录凭证并调用小程序登录api获取到临时code,通过调用服务端api发送code获取openID和token并缓存</strong></p>
 <span id="more"></span>
 
 
-<p><strong>根据不同平台，使用不同依赖  可根据mpvuePlatform的值来判断是什么平台，新建request.js文件</strong>：</p>
-<p>在微信小程序中引入</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">if (mpvuePlatform === &#x27;wx&#x27;) &#123;</span><br><span class="line">  var Fly = require(&#x27;flyio/dist/npm/wx&#x27;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<p>在支付宝小程序中引入</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">var Fly=require(&quot;flyio/dist/npm/ap&quot;) </span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<p>Weex中引入</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">var Fly=require(&quot;flyio/dist/npm/weex&quot;) </span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
-<p><strong>配置请求前缀</strong></p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">var fly = new Fly();</span><br><span class="line">fly.config.baseURL = &#x27;xxxxxxxx&#x27;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
-<p><strong>请求拦截</strong></p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">fly.interceptors.request.use((config, promise) =&gt; &#123;</span><br><span class="line">  return config;</span><br><span class="line">&#125;)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<p><strong>响应拦截</strong></p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">fly.interceptors.response.use((response) =&gt; &#123;</span><br><span class="line">  return response;</span><br><span class="line">&#125;)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<p><strong>请求封装</strong></p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">export default &#123;</span><br><span class="line">  get(url, params) &#123;</span><br><span class="line">    return new Promise((resolve, reject) =&gt; &#123;</span><br><span class="line">      fly.get(url, params).then(result =&gt; &#123;</span><br><span class="line">        resolve(result);</span><br><span class="line">      &#125;).catch(err =&gt; &#123;</span><br><span class="line">        reject(err.engine.response)</span><br><span class="line">      &#125;)</span><br><span class="line">    &#125;)</span><br><span class="line"></span><br><span class="line">  &#125;,</span><br><span class="line">  post(url, params) &#123;</span><br><span class="line">    return new Promise((resolve, reject) =&gt; &#123;</span><br><span class="line">      fly.post(url, params).then(result =&gt; &#123;</span><br><span class="line">        resolve(result);</span><br><span class="line">      &#125;).catch(err =&gt; &#123;</span><br><span class="line">        reject(err.engine.response)</span><br><span class="line">      &#125;)</span><br><span class="line">    &#125;)</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>  
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">mpvue.checkSession(&#123;</span><br><span class="line">    success() &#123;</span><br><span class="line">        //session_key 未过期，并且在本生命周期一直有效，不做处理</span><br><span class="line">    &#125;,</span><br><span class="line">    fail() &#123;</span><br><span class="line">        mpvue.login(&#123;</span><br><span class="line">            success(res) &#123;</span><br><span class="line">            if (res.code) &#123;</span><br><span class="line">                api.getOpenID(&#123; code: res.code &#125;).then(result =&gt; &#123;</span><br><span class="line">                let openid = result.data.openId;</span><br><span class="line">                store.commit(&quot;SET_OPENID&quot;, openid);</span><br><span class="line">                &#125;, err =&gt; &#123;</span><br><span class="line"></span><br><span class="line">                &#125;)</span><br><span class="line">            &#125; else &#123;</span><br><span class="line">                console.log(&#x27;获取code失败！&#x27; + res.errMsg)</span><br><span class="line">            &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<p><strong>页面上点击授权登录按钮，授权获取手机号，如果不同意授权，则跳转到登录界面，如果同意授权则获取iv,encryptedData传递给服务端，服务端解析手机号，如果手机号已经绑定，则直接登录，如果未绑定则绑定并登录，拿到tokend,token作为登录凭证</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">&lt;button open-type=&quot;getPhoneNumber&quot; @getphonenumber=&quot;getPhoneNumber&quot; class=&quot;btn&quot;&gt;用户一键登录&lt;/button&gt;</span><br><span class="line">let that = this;</span><br><span class="line">if (e.mp.detail.errMsg == &quot;getPhoneNumber:ok&quot;) &#123;</span><br><span class="line">    let params = &#123;</span><br><span class="line">    iv: e.mp.detail.iv,</span><br><span class="line">    encryptedData: e.mp.detail.encryptedData</span><br><span class="line">    &#125;</span><br><span class="line">    that.$http.wxLogin(params).then(resultLogin =&gt; &#123;</span><br><span class="line">    mpvue.navigateBack()</span><br><span class="line">    &#125;, err =&gt; &#123;</span><br><span class="line">        mpvue.showToast(&#123;</span><br><span class="line">        title: err.msg,</span><br><span class="line">        icon: &quot;none&quot;</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;)</span><br></pre></td></tr></table></figure>
+<p><strong>登录页面填写手机号和验证码，如果手机号已绑定，则直接登录，未绑定则先绑定后并登录</strong></p>
+  
 	</div>
 		<footer class="article-footer clearfix">
 <div class="article-catetags">
@@ -128,7 +118,7 @@
 
 	<div class="article-share" id="share">
 	
-	  <div data-url="http://leezj.cn/2021/12/23/%E5%B0%8F%E7%A8%8B%E5%BA%8F/mpvue%E5%BC%80%E5%8F%91%E5%B0%8F%E7%A8%8B%E5%BA%8F%E4%B9%8B%E4%BD%BF%E7%94%A8fly%E5%AE%9E%E7%8E%B0httpServer%E8%AF%B7%E6%B1%82/" data-title="mpvue开发小程序之使用fly实现httpServer请求 | 华狸狐少" data-tsina="" class="share clearfix">
+	  <div data-url="http://leezj.cn/2021/12/23/%E5%B0%8F%E7%A8%8B%E5%BA%8F/mpvue%E5%BC%80%E5%8F%91%E5%B0%8F%E7%A8%8B%E5%BA%8F%E4%B9%8B%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%E6%8E%88%E6%9D%83%E7%99%BB%E5%BD%95%E6%B5%81%E7%A8%8B/" data-title="mpvue开发小程序之微信小程序授权登录流程 | 华狸狐少" data-tsina="" class="share clearfix">
 	  </div>
 	
 	</div>
@@ -141,14 +131,14 @@
 	
 <nav class="article-nav clearfix">
  
- <div class="prev" >
- <a href="/2021/12/23/小程序/mpvue开发小程序之VUEX的使用/" title="mpvue开发小程序之VUEX的使用">
-  <strong>上一篇：</strong><br/>
-  <span>
-  mpvue开发小程序之VUEX的使用</span>
+
+<div class="next">
+<a href="/2021/12/23/小程序/mpvue开发小程序之VUEX的使用/"  title="mpvue开发小程序之VUEX的使用">
+ <strong>下一篇：</strong><br/> 
+ <span>mpvue开发小程序之VUEX的使用
+</span>
 </a>
 </div>
-
 
 </nav>
 
